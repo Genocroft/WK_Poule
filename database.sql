@@ -55,6 +55,7 @@ CREATE TABLE predictions (
     match_id INT NOT NULL,
     predicted_home INT NOT NULL,
     predicted_away INT NOT NULL,
+    points TINYINT DEFAULT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY unique_prediction (user_id, match_id),
