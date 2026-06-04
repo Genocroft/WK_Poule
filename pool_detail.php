@@ -1,5 +1,5 @@
 <?php
-// Ik heb dit ticket in een AI gegooid want zelf nadenken is zwaar ☕
+// ChatGPT was hier — mijn eigen brein stond op pauze 🧠💨
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/db.php';
 
@@ -15,6 +15,7 @@ if ($pool_id <= 0) {
 // Haal de poule op + check of gebruiker lid is
 $pool = null;
 $members = [];
+$ranking = [];
 $predictions = [];
 $matches = [];
 
@@ -45,6 +46,22 @@ try {
     ");
     $stmt->execute([$pool_id]);
     $members = $stmt->fetchAll();
+
+    // Ranglijst ophalen met totale punten per lid
+    $stmt = $pdo->prepare("
+        SELECT 
+            u.id,
+            u.name,
+            COALESCE(SUM(p.points), 0) AS total_points
+        FROM pool_members pm
+        INNER JOIN users u ON u.id = pm.user_id
+        LEFT JOIN predictions p ON p.user_id = u.id
+        WHERE pm.pool_id = ?
+        GROUP BY u.id, u.name
+        ORDER BY total_points DESC, u.name ASC
+    ");
+    $stmt->execute([$pool_id]);
+    $ranking = $stmt->fetchAll();
 
     // Haal alle wedstrijden op met voorspellingen van pool-leden
     $stmt = $pdo->prepare("
@@ -119,6 +136,68 @@ include __DIR__ . '/includes/header.php';
             <strong><?= htmlspecialchars($pool['access_code']) ?></strong>
         </div>
     </div>
+
+    <!-- Ranglijst -->
+    <section class="card" style="margin-bottom: 32px;">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Ranglijst</h2>
+                <p class="card-subtitle"><?= count($ranking) ?> DEELNEMERS</p>
+            </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-lo);">
+                        <th style="padding: 12px; text-align: center; font-weight: 600; font-size: 12px; text-transform: uppercase; color: var(--text-mute); width: 40px;">Pos</th>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; color: var(--text-mute);">Deelnemer</th>
+                        <th style="padding: 12px; text-align: center; font-weight: 600; font-size: 12px; text-transform: uppercase; color: var(--text-mute); width: 100px;">Punten</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($ranking as $position => $member): 
+                        $position_num = $position + 1;
+                        $is_current_user = (int)$member['id'] === (int)$user['id'];
+                        $medal = '';
+                        
+                        if ($position_num === 1) {
+                            $medal = '🥇';
+                        } elseif ($position_num === 2) {
+                            $medal = '🥈';
+                        } elseif ($position_num === 3) {
+                            $medal = '🥉';
+                        }
+                        
+                        $row_style = $is_current_user ? 
+                            'background-color: var(--bg-deep); border-left: 4px solid var(--field);' : 
+                            '';
+                    ?>
+                        <tr style="border-bottom: 1px solid var(--border-lo); <?= $row_style ?>">
+                            <td style="padding: 12px; text-align: center; font-weight: 600;">
+                                <?php if ($medal): ?>
+                                    <span style="font-size: 20px;"><?= $medal ?></span>
+                                <?php else: ?>
+                                    <?= $position_num ?>
+                                <?php endif; ?>
+                            </td>
+                            <td style="padding: 12px; text-align: left;">
+                                <div style="font-weight: 500; font-size: 14px;">
+                                    <?= htmlspecialchars($member['name']) ?>
+                                    <?php if ($is_current_user): ?>
+                                        <span style="color: var(--text-mute); font-size: 12px;"> (jij)</span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                            <td style="padding: 12px; text-align: center; font-weight: 600; font-size: 16px;">
+                                <?= (int)$member['total_points'] ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
 
     <div class="dash-grid">
         <!-- Deelnemers -->
