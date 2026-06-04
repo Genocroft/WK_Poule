@@ -850,6 +850,53 @@ input, textarea, select { font-family: inherit; }
     animation: fadeInUp 0.5s ease-out both;
 }
 
+/* Ranking list animations - slide in from right on desktop */
+@keyframes slideInFromRight {
+    from { opacity: 0; transform: translateX(60px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Ranking list animations - slide in from bottom on mobile */
+@keyframes slideInFromBottom {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Apply animations to member list items */
+.member-list .member {
+    animation: slideInFromRight 0.6s ease-out both;
+}
+
+/* Apply animations to match list items */
+.match-list .match {
+    animation: slideInFromRight 0.6s ease-out both;
+}
+
+/* Stagger animation delays for each child */
+.member-list .member:nth-child(1) { animation-delay: 0.1s; }
+.member-list .member:nth-child(2) { animation-delay: 0.2s; }
+.member-list .member:nth-child(3) { animation-delay: 0.3s; }
+.member-list .member:nth-child(4) { animation-delay: 0.4s; }
+.member-list .member:nth-child(5) { animation-delay: 0.5s; }
+.member-list .member:nth-child(6) { animation-delay: 0.6s; }
+.member-list .member:nth-child(7) { animation-delay: 0.7s; }
+.member-list .member:nth-child(8) { animation-delay: 0.8s; }
+.member-list .member:nth-child(9) { animation-delay: 0.9s; }
+.member-list .member:nth-child(10) { animation-delay: 1.0s; }
+.member-list .member:nth-child(n+11) { animation-delay: 1.1s; }
+
+.match-list .match:nth-child(1) { animation-delay: 0.1s; }
+.match-list .match:nth-child(2) { animation-delay: 0.2s; }
+.match-list .match:nth-child(3) { animation-delay: 0.3s; }
+.match-list .match:nth-child(4) { animation-delay: 0.4s; }
+.match-list .match:nth-child(5) { animation-delay: 0.5s; }
+.match-list .match:nth-child(6) { animation-delay: 0.6s; }
+.match-list .match:nth-child(7) { animation-delay: 0.7s; }
+.match-list .match:nth-child(8) { animation-delay: 0.8s; }
+.match-list .match:nth-child(9) { animation-delay: 0.9s; }
+.match-list .match:nth-child(10) { animation-delay: 1.0s; }
+.match-list .match:nth-child(n+11) { animation-delay: 1.1s; }
+
 /* ---------- Mobile adjustments ---------- */
 @media (max-width: 720px) {
     .main-nav { gap: 2px; }
@@ -862,4 +909,13 @@ input, textarea, select { font-family: inherit; }
     .score-input-group { align-self: center; }
     .form-card { padding: 28px 24px; }
     .hero { padding: 40px 0 30px; }
+    
+    /* Use bottom animation on mobile for ranking lists */
+    .member-list .member {
+        animation: slideInFromBottom 0.6s ease-out both;
+    }
+    
+    .match-list .match {
+        animation: slideInFromBottom 0.6s ease-out both;
+    }
 }

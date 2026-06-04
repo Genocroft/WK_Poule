@@ -1,6 +1,8 @@
 <?php
+// Ik heb dit ticket in een AI gegooid want zelf nadenken is zwaar ☕
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/avatar.php';
 
 requireLogin();
 $user = currentUser();
@@ -42,6 +44,7 @@ try {
     ");
     $stmt->execute([$pool_id]);
     $members = $stmt->fetchAll();
+
 } catch (PDOException $e) {
     die('Fout bij ophalen van poule: ' . htmlspecialchars($e->getMessage()));
 }
@@ -81,18 +84,20 @@ include __DIR__ . '/includes/header.php';
 
             <div class="member-list">
                 <?php foreach ($members as $member): ?>
-                    <div class="member">
-                        <div class="member-avatar">
-                            <?= strtoupper(substr(htmlspecialchars($member['name']), 0, 1)) ?>
+                    <a href="member_predictions.php?pool_id=<?= $pool_id ?>&member_id=<?= (int)$member['id'] ?>" style="text-decoration: none; color: inherit;">
+                        <div class="member">
+                            <div class="member-avatar" style="<?= getAvatarStyle($member['name']) ?>">
+                                <?= strtoupper(substr(htmlspecialchars($member['name']), 0, 1)) ?>
+                            </div>
+                            <div class="member-info">
+                                <div class="member-name"><?= htmlspecialchars($member['name']) ?></div>
+                                <div class="member-email"><?= htmlspecialchars($member['email']) ?></div>
+                            </div>
+                            <?php if ((int)$member['id'] === (int)$pool['created_by']): ?>
+                                <span class="member-badge">Beheerder</span>
+                            <?php endif; ?>
                         </div>
-                        <div class="member-info">
-                            <div class="member-name"><?= htmlspecialchars($member['name']) ?></div>
-                            <div class="member-email"><?= htmlspecialchars($member['email']) ?></div>
-                        </div>
-                        <?php if ((int)$member['id'] === (int)$pool['created_by']): ?>
-                            <span class="member-badge">Beheerder</span>
-                        <?php endif; ?>
-                    </div>
+                    </a>
                 <?php endforeach; ?>
             </div>
         </section>

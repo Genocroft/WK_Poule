@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/avatar.php';
 $user = currentUser();
 $currentPage = basename($_SERVER['PHP_SELF']);
 ?>
@@ -29,10 +30,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <a href="index.php"      class="nav-link <?= $currentPage === 'index.php'       ? 'is-active' : '' ?>">Dashboard</a>
                     <a href="pools.php"      class="nav-link <?= $currentPage === 'pools.php'       ? 'is-active' : '' ?>">Poules</a>
                     <a href="predictions.php" class="nav-link <?= $currentPage === 'predictions.php' ? 'is-active' : '' ?>">Voorspellingen</a>
+                    <?php if ($user['id'] === 1): ?>
+                        <a href="admin_scores.php" class="nav-link <?= $currentPage === 'admin_scores.php' ? 'is-active' : '' ?>">⚙️ Uitslagen</a>
+                    <?php endif; ?>
                     <div class="user-menu">
                         <a href="profile.php" class="nav-link <?= $currentPage === 'profile.php' ? 'is-active' : '' ?>">Profiel</a>
                         <span class="user-chip">
-                            <span class="user-avatar"><?= strtoupper(substr(htmlspecialchars($user['name']), 0, 1)) ?></span>
+                            <span class="user-avatar" style="<?= getAvatarStyle($user['name']) ?>"><?= strtoupper(substr(htmlspecialchars($user['name']), 0, 1)) ?></span>
                             <span class="user-name"><?= htmlspecialchars($user['name']) ?></span>
                         </span>
                         <a href="logout.php" class="btn btn-ghost btn-sm">Uitloggen</a>
