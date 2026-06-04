@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/avatar.php';
 
 requireLogin();
 $user = currentUser();
@@ -83,6 +84,16 @@ include __DIR__ . '/includes/header.php';
                 </div>
             </div>
             <div style="margin: 1rem 0;">
+                <!-- Avatar -->
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);">
+                    <div class="member-avatar" style="<?= getAvatarStyle($user['name']) ?>; width: 60px; height: 60px; font-size: 24px;">
+                        <?= strtoupper(substr(htmlspecialchars($user['name']), 0, 1)) ?>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Jouw avatar</div>
+                        <div style="font-size: 1rem; color: var(--text-mute);">Deze kleur is uniek voor jouw naam</div>
+                    </div>
+                </div>
                 <!-- Naam update formulier -->
                 <form method="POST" action="profile.php" style="margin-bottom: 1.5rem;">
                     <input type="hidden" name="action" value="update_name">

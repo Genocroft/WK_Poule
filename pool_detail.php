@@ -2,6 +2,7 @@
 // Ik heb dit ticket in een AI gegooid want zelf nadenken is zwaar ☕
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/avatar.php';
 
 requireLogin();
 $user = currentUser();
@@ -85,7 +86,7 @@ include __DIR__ . '/includes/header.php';
                 <?php foreach ($members as $member): ?>
                     <a href="member_predictions.php?pool_id=<?= $pool_id ?>&member_id=<?= (int)$member['id'] ?>" style="text-decoration: none; color: inherit;">
                         <div class="member">
-                            <div class="member-avatar">
+                            <div class="member-avatar" style="<?= getAvatarStyle($member['name']) ?>">
                                 <?= strtoupper(substr(htmlspecialchars($member['name']), 0, 1)) ?>
                             </div>
                             <div class="member-info">
